@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: repositories/mission_log.repo.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: repositories/mission_log.repo.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
+var __decorate = (this &amp;&amp; this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c &lt; 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" &amp;&amp; typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c &lt; 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 &amp;&amp; r &amp;&amp; Object.defineProperty(target, key, r), r;
+};
+var __importDefault = (this &amp;&amp; this.__importDefault) || function (mod) {
+    return (mod &amp;&amp; mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const tsyringe_1 = require("tsyringe");
+const mission_log_model_1 = __importDefault(require("../models/mission_log.model"));
+/**
+ * MissionLogRepo is a repository that handles data access related to MissionLog entries.
+ * It interacts with the MongoDB database using Mongoose to create and retrieve mission logs.
+ */
+let MissionLogRepo = class MissionLogRepo {
+    /**
+     * Creates a new mission log entry.
+     *
+     * @param {string} MoverId - The ID of the mover associated with the log entry.
+     * @param {"loading" | "on-mission" | "unloading"} action - The action performed (e.g., loading, on-mission, unloading).
+     * @returns {Promise&lt;Document>} - The created mission log document.
+     * @throws {Error} - Throws an error if the mission log could not be created.
+     */
+    async createLog(MoverId, action) {
+        try {
+            const log = new mission_log_model_1.default({
+                MoverId,
+                action,
+                timestamp: new Date(),
+            });
+            return await log.save(); // Save the new log entry to the database
+        }
+        catch (error) {
+            // Log and rethrow the error to be handled by the service or controller
+            throw new Error(`Failed to create mission log: ${error.message}`);
+        }
+    }
+    /**
+     * Retrieves all mission log entries from the database.
+     *
+     * @returns {Promise&lt;Document[]>} - A list of all mission log entries in the database.
+     * @throws {Error} - Throws an error if the mission logs could not be retrieved.
+     */
+    async getAllItems() {
+        try {
+            return await mission_log_model_1.default.find(); // Retrieve all mission log entries from the database
+        }
+        catch (error) {
+            // Log and rethrow the error to be handled by the service or controller
+            throw new Error(`Failed to retrieve mission logs: ${error.message}`);
+        }
+    }
+};
+MissionLogRepo = __decorate([
+    (0, tsyringe_1.injectable)()
+], MissionLogRepo);
+exports.default = MissionLogRepo;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="global.html#AppDataSource">AppDataSource</a></li><li><a href="ItemController.html">ItemController</a></li><li><a href="ItemRepo.html">ItemRepo</a></li><li><a href="global.html#ItemRoutes">ItemRoutes</a></li><li><a href="ItemService.html">ItemService</a></li><li><a href="LoggerService.html">LoggerService</a></li><li><a href="MissionLogController.html">MissionLogController</a></li><li><a href="MissionLogRepo.html">MissionLogRepo</a></li><li><a href="global.html#MissionLogRoutes">MissionLogRoutes</a></li><li><a href="MissionLogService.html">MissionLogService</a></li><li><a href="global.html#MoverController">MoverController</a></li><li><a href="MoverRepo.html">MoverRepo</a></li><li><a href="global.html#MoverRoutes">MoverRoutes</a></li><li><a href="global.html#Routes">Routes</a></li><li><a href="Server.html">Server</a></li></ul><h3>Global</h3><ul><li><a href="global.html#.%2522default%2522">."default"</a></li><li><a href="global.html#HttpStatus">HttpStatus</a></li><li><a href="global.html#Item">Item</a></li><li><a href="global.html#ItemSchema">ItemSchema</a></li><li><a href="global.html#ItemValidationRules">ItemValidationRules</a></li><li><a href="global.html#MissionLog">MissionLog</a></li><li><a href="global.html#Mover">Mover</a></li><li><a href="global.html#MoverId">MoverId</a></li><li><a href="global.html#MoverSchema">MoverSchema</a></li><li><a href="global.html#action">action</a></li><li><a href="global.html#addTimestamps">addTimestamps</a></li><li><a href="global.html#config">config</a></li><li><a href="global.html#createMoverValidationRules">createMoverValidationRules</a></li><li><a href="global.html#default">default</a></li><li><a href="global.html#endMissionValidationRules">endMissionValidationRules</a></li><li><a href="global.html#errorHandler">errorHandler</a></li><li><a href="global.html#initializeApp">initializeApp</a></li><li><a href="global.html#items">items</a></li><li><a href="global.html#loadMoverValidationRules">loadMoverValidationRules</a></li><li><a href="global.html#missionLogSchema">missionLogSchema</a></li><li><a href="global.html#missionsCompleted">missionsCompleted</a></li><li><a href="global.html#name">name</a></li><li><a href="global.html#questState">questState</a></li><li><a href="global.html#registerAllDependencies">registerAllDependencies</a></li><li><a href="global.html#registerItemDependencies">registerItemDependencies</a></li><li><a href="global.html#registerMissionLogDependencies">registerMissionLogDependencies</a></li><li><a href="global.html#registerMoverDependencies">registerMoverDependencies</a></li><li><a href="global.html#requestLogger">requestLogger</a></li><li><a href="global.html#startMissionValidationRules">startMissionValidationRules</a></li><li><a href="global.html#startServer">startServer</a></li><li><a href="global.html#validateRequest">validateRequest</a></li><li><a href="global.html#weight">weight</a></li><li><a href="global.html#weightLimit">weightLimit</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue Jan 28 2025 21:29:25 GMT+0100 (Central European Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

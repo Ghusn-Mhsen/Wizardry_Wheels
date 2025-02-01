@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: validators/MoverValidationRules.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: validators/MoverValidationRules.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.endMissionValidationRules = exports.startMissionValidationRules = exports.loadMoverValidationRules = exports.createMoverValidationRules = void 0;
+const express_validator_1 = require("express-validator");
+/**
+ * Validation rules for the `create` route.
+ * These rules validate the incoming request body for creating a mover.
+ *
+ * @constant {Array} createMoverValidationRules - Array of validation rules for the `create` route.
+ *
+ * @example
+ *    Example usage in a route handler:
+ * app.post('/movers/create', createMoverValidationRules, (req, res) => {
+ *    Handle the request
+ * });
+ */
+exports.createMoverValidationRules = [
+    /**
+     * Validates that the `weightLimit` is a positive float number.
+     *
+     * @param {number} weightLimit - The weight limit of the mover.
+     * @throws {ValidationError} - Throws an error if the weight limit is not a positive float.
+     */
+    (0, express_validator_1.body)("weightLimit").isFloat({ gt: 0 }).withMessage("Weight limit must be a positive number"),
+    /**
+     * Validates that `questState` is one of the allowed values: 'resting', 'loading', or 'on-mission'.
+     *
+     * @param {string} questState - The current quest state of the mover.
+     * @throws {ValidationError} - Throws an error if the `questState` is not one of the allowed values.
+     */
+    (0, express_validator_1.body)("questState")
+        .isIn(["resting", "loading", "on-mission"])
+        .withMessage("Quest state must be one of 'resting', 'loading', or 'on-mission'"),
+    /**
+     * Validates that `items` is an array.
+     *
+     * @param {Array} items - List of items associated with the mover.
+     * @throws {ValidationError} - Throws an error if `items` is not an array.
+     */
+    (0, express_validator_1.body)("items").isArray().withMessage("Items should be an array"),
+    /**
+     * Validates that `missionsCompleted` is a non-negative integer.
+     *
+     * @param {number} missionsCompleted - The number of missions the mover has completed.
+     * @throws {ValidationError} - Throws an error if `missionsCompleted` is not a non-negative integer.
+     */
+    (0, express_validator_1.body)("missionsCompleted").isInt({ min: 0 }).withMessage("Missions completed must be a non-negative integer"),
+];
+/**
+ * Validation rules for the `load` route.
+ * These rules validate the incoming request body for loading items onto a mover.
+ *
+ * @constant {Array} loadMoverValidationRules - Array of validation rules for the `load` route.
+ */
+exports.loadMoverValidationRules = [
+    /**
+     * Validates that `MoverId` is a non-empty string.
+     *
+     * @param {string} MoverId - The ID of the mover.
+     * @throws {ValidationError} - Throws an error if the `MoverId` is not a valid string.
+     */
+    (0, express_validator_1.body)("MoverId").isString().notEmpty().withMessage("Mover ID is required"),
+    /**
+     * Validates that `itemIds` is an array where each item ID is a string.
+     *
+     * @param {Array} itemIds - List of item IDs to be loaded onto the mover.
+     * @throws {ValidationError} - Throws an error if `itemIds` is not an array or if any ID is not a string.
+     */
+    (0, express_validator_1.body)("itemIds")
+        .isArray()
+        .withMessage("Item IDs should be an array")
+        .custom((value) => value.every((id) => typeof id === "string"))
+        .withMessage("Each Item ID should be a string"),
+];
+/**
+ * Validation rules for the `startMission` route.
+ * These rules validate the incoming request body to start a mission for the mover.
+ *
+ * @constant {Array} startMissionValidationRules - Array of validation rules for the `startMission` route.
+ */
+exports.startMissionValidationRules = [
+    /**
+     * Validates that `MoverId` is a non-empty string.
+     *
+     * @param {string} MoverId - The ID of the mover starting the mission.
+     * @throws {ValidationError} - Throws an error if the `MoverId` is not a valid string.
+     */
+    (0, express_validator_1.body)("MoverId").isString().notEmpty().withMessage("Mover ID is required"),
+];
+/**
+ * Validation rules for the `endMission` route.
+ * These rules validate the incoming request body to end a mission for the mover.
+ *
+ * @constant {Array} endMissionValidationRules - Array of validation rules for the `endMission` route.
+ */
+exports.endMissionValidationRules = [
+    /**
+     * Validates that `MoverId` is a non-empty string.
+     *
+     * @param {string} MoverId - The ID of the mover ending the mission.
+     * @throws {ValidationError} - Throws an error if the `MoverId` is not a valid string.
+     */
+    (0, express_validator_1.body)("MoverId").isString().notEmpty().withMessage("Mover ID is required"),
+];
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="global.html#AppDataSource">AppDataSource</a></li><li><a href="ItemController.html">ItemController</a></li><li><a href="ItemRepo.html">ItemRepo</a></li><li><a href="global.html#ItemRoutes">ItemRoutes</a></li><li><a href="ItemService.html">ItemService</a></li><li><a href="LoggerService.html">LoggerService</a></li><li><a href="MissionLogController.html">MissionLogController</a></li><li><a href="MissionLogRepo.html">MissionLogRepo</a></li><li><a href="global.html#MissionLogRoutes">MissionLogRoutes</a></li><li><a href="MissionLogService.html">MissionLogService</a></li><li><a href="global.html#MoverController">MoverController</a></li><li><a href="MoverRepo.html">MoverRepo</a></li><li><a href="global.html#MoverRoutes">MoverRoutes</a></li><li><a href="global.html#Routes">Routes</a></li><li><a href="Server.html">Server</a></li></ul><h3>Global</h3><ul><li><a href="global.html#.%2522default%2522">."default"</a></li><li><a href="global.html#HttpStatus">HttpStatus</a></li><li><a href="global.html#Item">Item</a></li><li><a href="global.html#ItemSchema">ItemSchema</a></li><li><a href="global.html#ItemValidationRules">ItemValidationRules</a></li><li><a href="global.html#MissionLog">MissionLog</a></li><li><a href="global.html#Mover">Mover</a></li><li><a href="global.html#MoverId">MoverId</a></li><li><a href="global.html#MoverSchema">MoverSchema</a></li><li><a href="global.html#action">action</a></li><li><a href="global.html#addTimestamps">addTimestamps</a></li><li><a href="global.html#config">config</a></li><li><a href="global.html#createMoverValidationRules">createMoverValidationRules</a></li><li><a href="global.html#default">default</a></li><li><a href="global.html#endMissionValidationRules">endMissionValidationRules</a></li><li><a href="global.html#errorHandler">errorHandler</a></li><li><a href="global.html#initializeApp">initializeApp</a></li><li><a href="global.html#items">items</a></li><li><a href="global.html#loadMoverValidationRules">loadMoverValidationRules</a></li><li><a href="global.html#missionLogSchema">missionLogSchema</a></li><li><a href="global.html#missionsCompleted">missionsCompleted</a></li><li><a href="global.html#name">name</a></li><li><a href="global.html#questState">questState</a></li><li><a href="global.html#registerAllDependencies">registerAllDependencies</a></li><li><a href="global.html#registerItemDependencies">registerItemDependencies</a></li><li><a href="global.html#registerMissionLogDependencies">registerMissionLogDependencies</a></li><li><a href="global.html#registerMoverDependencies">registerMoverDependencies</a></li><li><a href="global.html#requestLogger">requestLogger</a></li><li><a href="global.html#startMissionValidationRules">startMissionValidationRules</a></li><li><a href="global.html#startServer">startServer</a></li><li><a href="global.html#validateRequest">validateRequest</a></li><li><a href="global.html#weight">weight</a></li><li><a href="global.html#weightLimit">weightLimit</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue Jan 28 2025 21:29:25 GMT+0100 (Central European Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

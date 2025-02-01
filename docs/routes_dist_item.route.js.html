@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: routes/dist/item.route.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: routes/dist/item.route.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
+exports.__esModule = true;
+var express_1 = require("express");
+var tsyringe_1 = require("tsyringe");
+var item_controller_1 = require("../controllers/item.controller");
+var ItemValidator_1 = require("../validators/ItemValidator");
+var validationMiddleware_1 = require("../middlewares/validationMiddleware");
+/**
+ * @swagger
+ * tags:
+ *   name: Items
+ *   description: API for managing items
+ */
+var ItemRoutes = /** @class */ (function () {
+    function ItemRoutes() {
+        this.router = express_1.Router();
+        this.ItemController = tsyringe_1.container.resolve(item_controller_1["default"]);
+        this.initializeRoutes();
+    }
+    /**
+     * Initializes the routes for handling item-related requests.
+     */
+    ItemRoutes.prototype.initializeRoutes = function () {
+        var _this = this;
+        /**
+         * @swagger
+         * /api/v1/items:
+         *   post:
+         *     summary: Add a new item
+         *     description: Adds a new item to the inventory
+         *     tags: [Items]
+         *     requestBody:
+         *       required: true
+         *       content:
+         *         application/json:
+         *           schema:
+         *             type: object
+         *             required:
+         *               - name
+         *               - weight
+         *             properties:
+         *               name:
+         *                 type: string
+         *                 example: "product_2"
+         *               weight:
+         *                 type: number
+         *                 example: 100
+         *     responses:
+         *       201:
+         *         description: Item created successfully
+         *         content:
+         *           application/json:
+         *             schema:
+         *               type: object
+         *               properties:
+         *                 message:
+         *                   type: string
+         *                   example: "Created"
+         *                 data:
+         *                   type: object
+         *                   properties:
+         *                     _id:
+         *                       type: string
+         *                       example: "6797ce58362cfa6baa00e34c"
+         *                     name:
+         *                       type: string
+         *                       example: "product_3"
+         *                     weight:
+         *                       type: number
+         *                       example: 100
+         *                     createdAt:
+         *                       type: string
+         *                       format: date-time
+         *                       example: "2025-01-27T18:20:08.611Z"
+         *                     updatedAt:
+         *                       type: string
+         *                       format: date-time
+         *                       example: "2025-01-27T18:20:08.617Z"
+         *                     __v:
+         *                       type: number
+         *                       example: 0
+         */
+        this.router.post("/", ItemValidator_1.ItemValidationRules, validationMiddleware_1.validateRequest, function (req, res) { return _this.ItemController.create(req, res); });
+        /**
+         * @swagger
+         * /api/v1/items:
+         *   get:
+         *     summary: Retrieve all items
+         *     description: Fetches all items from the inventory
+         *     tags: [Items]
+         *     responses:
+         *       200:
+         *         description: Successfully retrieved items
+         *         content:
+         *           application/json:
+         *             schema:
+         *               type: object
+         *               properties:
+         *                 message:
+         *                   type: string
+         *                   example: "Success"
+         *                 data:
+         *                   type: array
+         *                   items:
+         *                     type: object
+         *                     properties:
+         *                       _id:
+         *                         type: string
+         *                         example: "6797ce58362cfa6baa00e34c"
+         *                       name:
+         *                         type: string
+         *                         example: "product_3"
+         *                       weight:
+         *                         type: number
+         *                         example: 100
+         *                       createdAt:
+         *                         type: string
+         *                         format: date-time
+         *                         example: "2025-01-27T18:20:08.611Z"
+         *                       updatedAt:
+         *                         type: string
+         *                         format: date-time
+         *                         example: "2025-01-27T18:20:08.617Z"
+         *                       __v:
+         *                         type: number
+         *                         example: 0
+         */
+        this.router.get("/", function (req, res) { return _this.ItemController.getAll(req, res); });
+    };
+    return ItemRoutes;
+}());
+exports["default"] = new ItemRoutes().router;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="global.html#AppDataSource">AppDataSource</a></li><li><a href="ItemController.html">ItemController</a></li><li><a href="ItemRepo.html">ItemRepo</a></li><li><a href="global.html#ItemRoutes">ItemRoutes</a></li><li><a href="ItemService.html">ItemService</a></li><li><a href="LoggerService.html">LoggerService</a></li><li><a href="MissionLogController.html">MissionLogController</a></li><li><a href="MissionLogRepo.html">MissionLogRepo</a></li><li><a href="global.html#MissionLogRoutes">MissionLogRoutes</a></li><li><a href="MissionLogService.html">MissionLogService</a></li><li><a href="global.html#MoverController">MoverController</a></li><li><a href="MoverRepo.html">MoverRepo</a></li><li><a href="global.html#MoverRoutes">MoverRoutes</a></li><li><a href="global.html#Routes">Routes</a></li><li><a href="Server.html">Server</a></li></ul><h3>Global</h3><ul><li><a href="global.html#.%2522default%2522">."default"</a></li><li><a href="global.html#HttpStatus">HttpStatus</a></li><li><a href="global.html#Item">Item</a></li><li><a href="global.html#ItemSchema">ItemSchema</a></li><li><a href="global.html#ItemValidationRules">ItemValidationRules</a></li><li><a href="global.html#MissionLog">MissionLog</a></li><li><a href="global.html#Mover">Mover</a></li><li><a href="global.html#MoverId">MoverId</a></li><li><a href="global.html#MoverSchema">MoverSchema</a></li><li><a href="global.html#action">action</a></li><li><a href="global.html#addTimestamps">addTimestamps</a></li><li><a href="global.html#config">config</a></li><li><a href="global.html#createMoverValidationRules">createMoverValidationRules</a></li><li><a href="global.html#default">default</a></li><li><a href="global.html#endMissionValidationRules">endMissionValidationRules</a></li><li><a href="global.html#errorHandler">errorHandler</a></li><li><a href="global.html#initializeApp">initializeApp</a></li><li><a href="global.html#items">items</a></li><li><a href="global.html#loadMoverValidationRules">loadMoverValidationRules</a></li><li><a href="global.html#missionLogSchema">missionLogSchema</a></li><li><a href="global.html#missionsCompleted">missionsCompleted</a></li><li><a href="global.html#name">name</a></li><li><a href="global.html#questState">questState</a></li><li><a href="global.html#registerAllDependencies">registerAllDependencies</a></li><li><a href="global.html#registerItemDependencies">registerItemDependencies</a></li><li><a href="global.html#registerMissionLogDependencies">registerMissionLogDependencies</a></li><li><a href="global.html#registerMoverDependencies">registerMoverDependencies</a></li><li><a href="global.html#requestLogger">requestLogger</a></li><li><a href="global.html#startMissionValidationRules">startMissionValidationRules</a></li><li><a href="global.html#startServer">startServer</a></li><li><a href="global.html#validateRequest">validateRequest</a></li><li><a href="global.html#weight">weight</a></li><li><a href="global.html#weightLimit">weightLimit</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue Jan 28 2025 21:29:25 GMT+0100 (Central European Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

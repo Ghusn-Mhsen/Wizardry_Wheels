@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: src/services/mover.service.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: src/services/mover.service.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
+var __decorate = (this &amp;&amp; this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c &lt; 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" &amp;&amp; typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c &lt; 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 &amp;&amp; r &amp;&amp; Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this &amp;&amp; this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" &amp;&amp; typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this &amp;&amp; this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var __importDefault = (this &amp;&amp; this.__importDefault) || function (mod) {
+    return (mod &amp;&amp; mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const tsyringe_1 = require("tsyringe");
+const mover_repo_1 = __importDefault(require("../repositories/mover.repo"));
+const item_model_1 = __importDefault(require("../models/item.model"));
+const mission_log_repo_1 = __importDefault(require("../repositories/mission_log.repo")); // Assuming a mission log repository
+const logging_1 = __importDefault(require("../utils/handlers/logging"));
+let MoverService = class MoverService {
+    constructor(MoverRepo, missionLogRepo) {
+        this.MoverRepo = MoverRepo;
+        this.missionLogRepo = missionLogRepo;
+        this.logger = logging_1.default.getInstance("mover"); // Logger for this service
+    }
+    /**
+     * Creates a new mover with the provided data.
+     *
+     * @param {any} data - Data used to create the mover.
+     * @returns {Promise&lt;any>} The created mover.
+     */
+    async createMover(data) {
+        return this.MoverRepo.createMover(data);
+    }
+    /**
+     * Loads items onto a mover.
+     * Ensures that items are within weight limits and the mover is not already on a mission.
+     *
+     * @param {string} MoverId - The ID of the mover.
+     * @param {string[]} itemIds - The IDs of the items to load onto the mover.
+     * @returns {Promise&lt;any>} The updated mover.
+     */
+    async loadItems(MoverId, itemIds) {
+        const Mover = await this.MoverRepo.findMoverById(MoverId);
+        if (!Mover) {
+            this.logger.error(`Mover with ID ${MoverId} not found.`);
+            throw new Error(" Mover not found.");
+        }
+        if (Mover.questState === "on-mission") {
+            this.logger.error(`Mover with ID ${MoverId} is already on a mission.`);
+            throw new Error("Cannot load items while on a mission.");
+        }
+        const items = await item_model_1.default.find({ _id: { $in: itemIds } });
+        if (items.length !== itemIds.length) {
+            this.logger.error(`One or more items not found for Mover with ID ${MoverId}.`);
+            throw new Error("One or more items not found.");
+        }
+        const currentLoadedWeight = items.reduce((acc, item) => acc + item.weight, 0);
+        const loadedWeight = Mover.items.reduce((acc, item) => acc + item.weight, 0);
+        const totalWeight = currentLoadedWeight + loadedWeight;
+        if (totalWeight > Mover.weightLimit) {
+            this.logger.error(`Items exceed the weight limit for Mover with ID ${MoverId}.`);
+            throw new Error("Items exceed Mover's weight limit.");
+        }
+        Mover.items.push(...items);
+        await Mover.save();
+        await this.missionLogRepo.createLog(MoverId, "loading");
+        this.logger.info(`Successfully loaded items onto Mover with ID ${MoverId}.`);
+        return Mover;
+    }
+    /**
+     * Starts a mission for the specified mover.
+     *
+     * @param {string} MoverId - The ID of the mover to start the mission for.
+     * @returns {Promise&lt;any>} The updated mover with mission started.
+     */
+    async startMission(MoverId) {
+        try {
+            const Mover = await this.MoverRepo.findMoverById(MoverId);
+            if (!Mover) {
+                this.logger.error(`Mover with ID ${MoverId} not found.`);
+                throw new Error(" Mover not found.");
+            }
+            if (Mover.questState === "on-mission") {
+                this.logger.error(`Mover with ID ${MoverId} is already on a mission.`);
+                throw new Error("Already on a mission.");
+            }
+            Mover.questState = "on-mission";
+            await Mover.save();
+            this.logger.info(`Mission started for Mover with ID ${MoverId}.`);
+            await this.missionLogRepo.createLog(MoverId, "on-mission");
+            return Mover;
+        }
+        catch (err) {
+            this.logger.error(`Error starting mission for Mover with ID ${MoverId}: ${err.message}`);
+            throw err;
+        }
+    }
+    /**
+     * Ends the mission for the specified mover.
+     *
+     * @param {string} MoverId - The ID of the mover to end the mission for.
+     * @returns {Promise&lt;any>} The updated mover with mission ended.
+     */
+    async endMission(MoverId) {
+        const Mover = await this.MoverRepo.findMoverById(MoverId);
+        if (!Mover) {
+            this.logger.error(`Mover with ID ${MoverId} not found.`);
+            throw new Error(" Mover not found.");
+        }
+        if (Mover.questState === "resting") {
+            this.logger.error(`Mission already ended for Mover with ID ${MoverId}.`);
+            throw new Error("Mission already ended.");
+        }
+        Mover.items = [];
+        Mover.questState = "resting";
+        Mover.missionsCompleted += 1;
+        await Mover.save();
+        await this.missionLogRepo.createLog(MoverId, "unloading");
+        this.logger.info(`Mission ended for Mover with ID ${MoverId}.`);
+        return Mover;
+    }
+    /**
+     * Retrieves the mover with the most completed missions.
+     *
+     * @returns {Promise&lt;any>} The mover with the most completed missions.
+     */
+    async getMostCompletedMissions() {
+        try {
+            return this.MoverRepo.getMostCompletedMissions();
+        }
+        catch (err) {
+            this.logger.error(`Error fetching mover with most completed missions: ${err.message}`);
+            throw err;
+        }
+    }
+    /**
+     * Retrieves all movers.
+     *
+     * @returns {Promise&lt;any[]>} A list of all movers.
+     */
+    async getAllItems() {
+        try {
+            return this.MoverRepo.getAllMovers();
+        }
+        catch (err) {
+            this.logger.error(`Error fetching all movers: ${err.message}`);
+            throw err;
+        }
+    }
+};
+MoverService = __decorate([
+    (0, tsyringe_1.injectable)(),
+    __param(0, (0, tsyringe_1.inject)(mover_repo_1.default)),
+    __param(1, (0, tsyringe_1.inject)(mission_log_repo_1.default)),
+    __metadata("design:paramtypes", [mover_repo_1.default,
+        mission_log_repo_1.default])
+], MoverService);
+exports.default = MoverService;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="global.html#AppDataSource">AppDataSource</a></li><li><a href="ItemController.html">ItemController</a></li><li><a href="ItemRepo.html">ItemRepo</a></li><li><a href="global.html#ItemRoutes">ItemRoutes</a></li><li><a href="ItemService.html">ItemService</a></li><li><a href="LoggerService.html">LoggerService</a></li><li><a href="MissionLogController.html">MissionLogController</a></li><li><a href="MissionLogRepo.html">MissionLogRepo</a></li><li><a href="global.html#MissionLogRoutes">MissionLogRoutes</a></li><li><a href="MissionLogService.html">MissionLogService</a></li><li><a href="global.html#MoverController">MoverController</a></li><li><a href="MoverRepo.html">MoverRepo</a></li><li><a href="global.html#MoverRoutes">MoverRoutes</a></li><li><a href="global.html#Routes">Routes</a></li><li><a href="Server.html">Server</a></li></ul><h3>Global</h3><ul><li><a href="global.html#.%2522default%2522">."default"</a></li><li><a href="global.html#HttpStatus">HttpStatus</a></li><li><a href="global.html#Item">Item</a></li><li><a href="global.html#ItemSchema">ItemSchema</a></li><li><a href="global.html#ItemValidationRules">ItemValidationRules</a></li><li><a href="global.html#MissionLog">MissionLog</a></li><li><a href="global.html#Mover">Mover</a></li><li><a href="global.html#MoverId">MoverId</a></li><li><a href="global.html#MoverSchema">MoverSchema</a></li><li><a href="global.html#action">action</a></li><li><a href="global.html#addTimestamps">addTimestamps</a></li><li><a href="global.html#config">config</a></li><li><a href="global.html#createMoverValidationRules">createMoverValidationRules</a></li><li><a href="global.html#default">default</a></li><li><a href="global.html#endMissionValidationRules">endMissionValidationRules</a></li><li><a href="global.html#errorHandler">errorHandler</a></li><li><a href="global.html#initializeApp">initializeApp</a></li><li><a href="global.html#items">items</a></li><li><a href="global.html#loadMoverValidationRules">loadMoverValidationRules</a></li><li><a href="global.html#missionLogSchema">missionLogSchema</a></li><li><a href="global.html#missionsCompleted">missionsCompleted</a></li><li><a href="global.html#name">name</a></li><li><a href="global.html#questState">questState</a></li><li><a href="global.html#registerAllDependencies">registerAllDependencies</a></li><li><a href="global.html#registerItemDependencies">registerItemDependencies</a></li><li><a href="global.html#registerMissionLogDependencies">registerMissionLogDependencies</a></li><li><a href="global.html#registerMoverDependencies">registerMoverDependencies</a></li><li><a href="global.html#requestLogger">requestLogger</a></li><li><a href="global.html#startMissionValidationRules">startMissionValidationRules</a></li><li><a href="global.html#startServer">startServer</a></li><li><a href="global.html#validateRequest">validateRequest</a></li><li><a href="global.html#weight">weight</a></li><li><a href="global.html#weightLimit">weightLimit</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue Jan 28 2025 21:29:25 GMT+0100 (Central European Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

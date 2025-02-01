@@ -1,0 +1,8 @@
+services:
+  node-app:
+    build:
+      context: .
+      target: production
+    env_file:
+      - ./production.env
+    command: npm  start
