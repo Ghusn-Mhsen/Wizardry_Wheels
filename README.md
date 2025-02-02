@@ -6,10 +6,10 @@ innovative tools, ensuring an efficient and unique delivery experience.
 
 ## 🚀 Features
 
-- **Microservices Architecture**: Scalable and modular design for efficient service management.
+- **Load Balancing**: Scalable and modular design for efficient service management using Docker-Swarm and NGINX server.
 - **Multi-Environment Support**: Supports both **development** and **production** environments.
 - **Docker & Docker Swarm**: Containerized deployment with rolling updates and scaling capabilities.
-- **Docker HUB**: push und pull image from remote repository.
+- **Docker HUB**: push and pull images from the remote repository.
 - **Logging & Error Handling**: Comprehensive logging using **Winston** and robust error handling.
 - **API Documentation**: Automatically generated API docs using **Swagger** and **JsDoc**.
 - **Testing**: Unit tests for the repository layer and end-to-end (E2E) tests for API endpoints.
