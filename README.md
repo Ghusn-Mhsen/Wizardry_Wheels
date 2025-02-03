@@ -1,4 +1,4 @@
-## Wizardry Wheels - Microservices App
+## Wizardry Wheels App
 Wizardry Wheels is an App revolutionizing item transportation with virtual magic! Powered by advanced
 technologies like Node.js, TypeScript, Docker, Docker Swarm, and MongoDB, it features swift, magical deliveries using
 innovative tools, ensuring an efficient and unique delivery experience.
