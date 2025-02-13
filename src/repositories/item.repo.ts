@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { injectable } from "tsyringe";
 import Item from "../models/item.model";
 import { Document } from "mongoose";
@@ -16,10 +17,12 @@ class ItemRepo {
      * @returns {Promise<Document>} - The created item document.
      * @throws {Error} - Throws an error if the item could not be created.
      */
+
     async createItem(data: any): Promise<Document> {
         try {
             const newItem = new Item(data);
             return await newItem.save(); // Save the new item to the database
+
         } catch (error: any) {
             // Log and rethrow the error to be handled by the service or controller
             throw new Error(`Failed to create item: ${error.message}`);

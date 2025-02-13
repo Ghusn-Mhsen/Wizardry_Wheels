@@ -1,7 +1,5 @@
 import swaggerJsdoc from 'swagger-jsdoc';
 
-
-
 const swaggerOptions: swaggerJsdoc.Options = {
     definition: {
         openapi: '3.0.0', // OpenAPI version
@@ -12,7 +10,7 @@ const swaggerOptions: swaggerJsdoc.Options = {
         },
         servers: [
             {
-                url: 'http://localhost:4000', // Change this to match your environment
+                url: 'http://localhost:8080', // Change this to match your environment
                 description: 'Development server',
             },
         ],
@@ -23,4 +21,3 @@ const swaggerOptions: swaggerJsdoc.Options = {
 // Generate Swagger documentation
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 export default swaggerSpec;
-

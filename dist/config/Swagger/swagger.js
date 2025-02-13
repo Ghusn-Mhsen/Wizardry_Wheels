@@ -14,7 +14,7 @@ const swaggerOptions = {
         },
         servers: [
             {
-                url: 'http://localhost:4000', // Change this to match your environment
+                url: 'http://localhost:8080', // Change this to match your environment
                 description: 'Development server',
             },
         ],

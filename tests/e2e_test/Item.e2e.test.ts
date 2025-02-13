@@ -1,6 +1,6 @@
 import request from 'supertest';
 import { initializeApp, stopServer } from '../../src/index';
-import AppDataSource from "../../src/config/DB/db.connection"
+import AppDataSource from "../../src/config/DB/db.connection";
 
 import { Application } from 'express';
 let app: Application;

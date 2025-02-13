@@ -22,8 +22,11 @@ class AppDataSource {
      * @throws {Error} If the connection fails, the process will exit with an error.
      */
     async connect(): Promise<void> {
-        const databaseUrl = `mongodb://${config.mongo.user}:${config.mongo.password}@${config.mongo.host}:${config.mongo.port}/?authSource=admin`;
-        //const databaseUrl = 'mongodb://localhost:27017/Magic'; // Hardcoded for now.
+        let databaseUrl = `mongodb://${config.mongo.user}:${config.mongo.password}@${config.mongo.host}:${config.mongo.port}/?authSource=admin`;
+        if (config.nodeEnv === 'test') {
+            databaseUrl = 'mongodb://localhost:27017/Magic'; // Hardcoded for now.
+        }
+
 
         if (!databaseUrl) {
             console.error("DATABASE_URL is not defined");

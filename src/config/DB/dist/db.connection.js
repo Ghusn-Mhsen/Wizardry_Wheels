@@ -63,7 +63,9 @@ var AppDataSource = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         databaseUrl = "mongodb://" + config_1["default"].mongo.user + ":" + config_1["default"].mongo.password + "@" + config_1["default"].mongo.host + ":" + config_1["default"].mongo.port + "/?authSource=admin";
-                        //const databaseUrl = 'mongodb://localhost:27017/Magic'; // Hardcoded for now.
+                        if (config_1["default"].nodeEnv === 'test') {
+                            databaseUrl = 'mongodb://localhost:27017/Magic'; // Hardcoded for now.
+                        }
                         if (!databaseUrl) {
                             console.error("DATABASE_URL is not defined");
                             process.exit(1); // Exit process if the database URL is not found

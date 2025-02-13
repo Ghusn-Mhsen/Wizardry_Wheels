@@ -16,6 +16,7 @@ dotenv.config({
  * @constant {Config}
  */
 var config = {
+    nodeEnv: process.env.NODE_ENV,
     port: process.env.PORT,
     log_file_path: process.env.LOG_FILE_PATH,
     log_level: process.env.LOG_LEVEL,

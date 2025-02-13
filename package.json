@@ -8,7 +8,7 @@
     "start": " node dist/index.js",
     "dev": " nodemon src/index.ts",
     "lint": "eslint . --ext .ts",
-    "test:e2e": "jest --config jest.e2e.config.ts --watchAll --runInBand",
+    "test:e2e": "cross-env NODE_ENV=test jest --config jest.e2e.config.ts --watchAll --runInBand",
     "test:unit": "jest --config jest.unit.config.ts --watchAll --runInBand",
     "docs": "jsdoc -r dist/  --destination docs/"
   },
@@ -25,7 +25,6 @@
     "Virtual Delivery",
     "Magical Transportation",
     "Modern Logistics",
-    "Microservices",
     "Winston Logger",
     "API Documentation"
   ],
@@ -52,7 +51,7 @@
     "@types/jest": "^29.5.14",
     "@types/mongoose": "^5.11.97",
     "@types/morgan": "^1.9.9",
-    "@types/node": "^22.10.10",
+    "@types/node": "^22.13.1",
     "@types/supertest": "^6.0.2",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.7",

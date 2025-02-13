@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { injectable, inject } from "tsyringe";
 import ItemRepo from "../repositories/item.repo";
 

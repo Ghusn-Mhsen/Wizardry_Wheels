@@ -93,14 +93,38 @@ startServer();
 -Error Handling all App
 -winston
 -stream morgan
-
 -docker
-
 -jsDoc
 -swagger
-
 -e2e
 -unit test
+------------------
+
+multi environment
+docker
+docker swarm
+microservice
+logging
+error handling
+unit test
+e2e test
+swagger
+JsDoc
+eslint
+nginx
+typescript
+
+ - I used nginx for URL redirection
+ - docker-swarm for rolling updates
+ - Run multiple app (Microservice App)
+ - multi-environment (production - development )
+ - unit test For repository layer
+ - E2e test
 
 
+
+docker-compose -f ./docker-compose.yml -f ./docker-compose.dev.yml down -v
+docker stack deploy -c docker-compose.yml -c docker-compose.dev.yml express-app
+docker-compose -f ./docker-compose.yml -f ./docker-compose.dev.yml build
+docker-compose -f ./docker-compose.yml -f ./docker-compose.dev.yml  up -d --build
 */

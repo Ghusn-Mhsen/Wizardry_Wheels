@@ -26,6 +26,4 @@ var config = {
         port: process.env.DB_PORT || "27017"
     }
 };
-console.log("NODE_ENV: ", process.env.NODE_ENV);
-console.log(config);
 exports["default"] = config;
